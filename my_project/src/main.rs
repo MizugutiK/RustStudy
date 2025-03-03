@@ -2,6 +2,7 @@ fn main() {
     println!("プログラミング課題");
     no1();
     no2();
+    no3();
 }
 
 // 課題１　重複しない乱数を生成
@@ -40,7 +41,7 @@ fn no1() {
     println!("生成されたランダムな数字: {:?}", selected_numbers);
 }
 
-// 課題2　ファイルに出力
+// 課題2　ファイル出力
 use std::fs::File; // ファイルを扱うための標準ライブラリ
 use std::io::Write; // ファイルに書き込むために必要トレイト
 
@@ -56,5 +57,36 @@ fn no2() {
     // witenlnで作成したファイルに書き込んでいる
     writeln!(newfile, "hello world.").expect("cannot write.");
 
-    print!("{:?}に書き込まれました", path)
+    println!("{:?}に書き込まれました", path)
+}
+
+// 課題3　ファイル入力
+fn no3() {
+    println!("ファイル名を入れてください:");
+
+    let mut filename = String::new();
+    std::io::stdin()
+        .read_line(&mut filename)
+        .expect("読み取りに失敗しました");
+
+    // 改行文字を取り除く
+    // stdin から読み取った入力には末尾に改行が含まれるらしい
+    let filename = filename.trim();
+
+    // ファイルを作成
+    let mut createfile: File =
+        File::create(filename).expect(&format!("ファイル '{}' の作成に失敗しました", filename));
+
+    println!("ファイル内に記載するテキストを入力してください:");
+
+    let mut newtext = String::new();
+    std::io::stdin()
+        .read_line(&mut newtext)
+        .expect("テキストの入力に失敗しました");
+
+    // newtext.trim()で入力した文字の末尾の改行を防ぐ
+    writeln!(createfile, "{}", newtext.trim()).expect("ファイルへの書き込みに失敗しました");
+
+    println!("テキストがファイル '{}' に書き込まれました", filename);
+
 }
