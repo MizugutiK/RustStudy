@@ -4,6 +4,7 @@ fn main() {
     no2();
     no3();
     no4();
+    no5();
 }
 
 // 課題１　重複しない乱数を生成
@@ -120,4 +121,50 @@ fn no4() {
     contents.sort();
 
     println!("ソート結果{:?}", contents);
+}
+
+// 課題5
+use std::collections::HashMap;
+use std::io::Read;
+
+fn no5() {
+    println!("単語をソートするファイル名を入れてください:");
+
+    let mut cont_searc_filename = String::new();
+    std::io::stdin()
+        .read_line(&mut cont_searc_filename)
+        .expect("読み取りに失敗しました");
+
+    let re_cont_searc_filename = cont_searc_filename.trim();
+
+    // 指定したファイル名のファイルを開く
+    let mut opencountfile =
+        File::open(re_cont_searc_filename).expect("ファイルを開くことができませんでした");
+
+    // ファイル内のテキストを保持
+    let mut content_text = String::new();
+
+    // テキストファイルの読み込み
+    opencountfile
+        .read_to_string(&mut content_text)
+        .expect("ファイルの読み込みに失敗しました");
+
+    // 単語のカウント
+    let mut word_count = HashMap::new();
+    for words in content_text.split_whitespace() {
+        *word_count.entry(words).or_insert(0) += 1;
+    }
+
+    // 出現回数でソートするために Vec に変換
+    let mut sorted_counts: Vec<(String, u32)> = word_count
+        .clone()
+        .into_iter()
+        .map(|(k, v)| (k.to_string(), v))
+        .collect();
+    sorted_counts.sort_by(|a, b| b.1.cmp(&a.1)); // 出現回数で降順にソート
+
+    println!("単語の出現回数:");
+    for (words, count) in &sorted_counts {
+        println!("{}: {}", words, count);
+    }
 }
