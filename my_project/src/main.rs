@@ -64,7 +64,7 @@ fn no2() {
 
 // 課題3　ファイル入力
 fn no3() {
-    println!("ファイル名を入れてください:");
+    println!("読み込むファイル名を入れてください:");
 
     let mut filename = String::new();
     std::io::stdin()
@@ -75,21 +75,37 @@ fn no3() {
     // stdin から読み取った入力には末尾に改行が含まれるらしい
     let refilename = filename.trim();
 
-    // ファイルを作成
-    let mut createfile: File =
-        File::create(refilename).expect(&format!("ファイル '{}' の作成に失敗しました", filename));
+    // ファイルを開く
+    let open_file: File = File::open(refilename).expect(&format!(
+        "ファイル '{}' を開くことに失敗しました",
+        refilename
+    ));
 
-    println!("ファイル内に記載するテキストを入力してください:");
+    // println!("ファイル内に記載するテキストを入力してください:");
 
-    let mut newtext = String::new();
-    std::io::stdin()
-        .read_line(&mut newtext)
-        .expect("テキストの入力に失敗しました");
+    // let mut newtext = String::new();
+    // std::io::stdin()
+    //     .read_line(&mut newtext)
+    //     .expect("テキストの入力に失敗しました");
 
-    // newtext.trim()で入力した文字の末尾の改行を防ぐ
-    writeln!(createfile, "{}", newtext.trim()).expect("ファイルへの書き込みに失敗しました");
+    // // newtext.trim()で入力した文字の末尾の改行を防ぐ
+    // writeln!(createfile, "{}", newtext.trim()).expect("ファイルへの書き込みに失敗しました");
 
-    println!("テキストがファイル '{}' に書き込まれました", refilename);
+    // let mut content_open = String::new();
+
+    // open_file
+    //     .read_to_string(&mut content_open)
+    //     .expect("ファイルの読み込みに失敗しました");
+
+    let opem_buffered = BufReader::new(open_file);
+
+    // 読み取ったテキストをベクター型に格納
+    let contents_open: Vec<String> = opem_buffered
+        .lines() // `lines()` は `Result<String>` を返す
+        .filter_map(|line| line.ok().map(|l| l.trim_end().to_string())) // `trim_end()` を適用
+        .collect();
+
+    println!("ファイルに記載されているテキストです{:?}", contents_open);
 }
 
 // 課題４　ソート
@@ -128,7 +144,7 @@ use std::collections::HashMap;
 use std::io::Read;
 
 fn no5() {
-    println!("単語をソートするファイル名を入れてください:");
+    println!("出現単語をカウントするファイル名を入れてください:");
 
     let mut cont_searc_filename = String::new();
     std::io::stdin()
@@ -174,8 +190,8 @@ fn no5() {
 use std::f64;
 fn no6() {
     let a = -0.2; // 放物線の開き具合（絶対値を大きくすると急なカーブ）
-    let width = 40; // コンソールの幅
-    let height = 20; // コンソールの高さ（Y軸の最大値）
+    let width = 80; // コンソールの幅
+    let height = 40; // コンソールの高さ（Y軸の最大値）
     // width を usize から i32 に変換してから - を適用
     let width_i32 = width as i32;
 
