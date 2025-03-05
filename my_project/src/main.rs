@@ -15,26 +15,25 @@ fn no1() {
     // どういった乱数を生成するか決定している(3種類くらいある中でどれを使うか)
     let mut randm = rand::rng(); // 乱数生成器を作成
 
-    println!("1～100の範囲で乱数の個数を入力してください:");
+    // 入力ループ
+    let num_count: usize = loop {
+        println!("1～1,000,000以内の正の整数を入力してください。（終了する場合はCtrl+C）:");
 
-    // 入力を受け取る
-    let mut serectnum = String::new();
-    std::io::stdin()
-        .read_line(&mut serectnum)
-        .expect("読み取りに失敗しました");
-
-    //入力を数値に型変更
-    let num_count: usize = match serectnum.trim().parse() {
-        // 入力が指定の範囲かチェック
-        Ok(n) if n > 0 && n < 10000001 => n,
-        _ => {
-            println!("無効な入力です。1～1000000以内の正の整数を入力してください。");
-            return;
+        // 入力を受け取る
+        let mut input = String::new();
+        if std::io::stdin().read_line(&mut input).is_err() {
+            println!("読み取りに失敗しました。もう一度入力してください。");
+            continue;
+        }
+        // 数字のチェック
+        match input.trim().parse::<usize>() {
+            Ok(n) if (1..=1_000_000).contains(&n) => break n,
+            _ => println!("無効な入力です。1～1,000,000の範囲の正の整数を入力してください。"),
         }
     };
-
     // 数字を用意
     let mut numbers: Vec<u32> = (0..=1000000).collect();
+
     // 生成した数字を乱数生成器を用いてランダムに並べ替え
     numbers.shuffle(&mut randm);
 
