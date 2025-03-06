@@ -1,11 +1,13 @@
 fn main() {
     println!("プログラミング課題");
-    no1();
-    no2();
-    no3();
-    no4();
-    no5();
-    no6();
+    // no1();
+    // no2();
+    // no3();
+    // no4();
+    // no5();
+    // no6();
+    no7();
+
 }
 
 // 課題１　重複しない乱数を生成
@@ -211,4 +213,42 @@ fn no6() {
     for row in grid {
         println!("{}", row.iter().collect::<String>());
     }
+}
+
+// 課題7
+fn no7() {
+    let a = -0.2; // 放物線の開き具合（絶対値を大きくすると急なカーブ）
+    let width = 80; // コンソールの幅
+    let height = 40; // コンソールの高さ（Y軸の最大値）
+    // width を usize から i32 に変換してから - を適用
+    let width_i32 = width as i32;
+
+    let mut grid = vec![vec![' '; width]; height];
+
+    for x in -width_i32 / 2..=width_i32 / 2 {
+        let xf = x as f64;
+        let yf = a * xf * xf; // y座標の計算
+        let y = (height as i32 - 1 - yf.round() as i32).clamp(0, height as i32 - 1);
+
+        let x_pos = (x + width_i32 / 2) as usize;
+        if x_pos < width {
+            grid[y as usize][x_pos] = '*';
+        }
+    }
+        let  path_out: &str = "output.txt";
+
+    for row in grid {
+
+        // file::createでファイル作成
+        let mut new_output_file: File = File::create(path_out)
+            // エラー文
+            .expect("file not found.");
+    
+        // witenlnで作成したファイルに書き込んでいる
+        writeln!(new_output_file, "{:?}",row.iter().collect::<String>()).expect("cannot write.");
+
+    }
+        println!("{:?}ファイルに放物線が記載されました", path_out);
+
+   
 }
