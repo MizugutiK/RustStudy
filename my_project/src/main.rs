@@ -101,13 +101,13 @@ fn no3() {
 
     let opem_buffered = BufReader::new(open_file);
 
-    // 読み取ったテキストをベクター型に格納
-    let contents_open: Vec<String> = opem_buffered
-        .lines() // `lines()` は `Result<String>` を返す
-        .filter_map(|line| line.ok().map(|l| l.trim_end().to_string())) // `trim_end()` を適用
-        .collect();
-
-    println!("ファイルに記載されているテキストです{:?}", contents_open);
+    //表示用
+    for line in opem_buffered.lines() {
+        match line {
+            Ok(content) => println!("{}", content), // そのまま表示
+            Err(e) => eprintln!("ファイルの読み込み中にエラーが発生しました: {}", e),
+        }
+    }
 }
 
 // 課題４　ソート
