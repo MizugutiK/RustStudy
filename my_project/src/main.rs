@@ -1,13 +1,12 @@
 fn main() {
     println!("プログラミング課題");
-    no1();
-    no2();
-    no3();
-    no4();
-    no5();
+    // no1();
+    // no2();
+    // no3();
+    // no4();
+    // no5();
     no6();
     no7();
-
 }
 
 // 課題１　重複しない乱数を生成
@@ -191,64 +190,41 @@ fn no5() {
 
 use std::f64;
 fn no6() {
-    let a = -0.2; // 放物線の開き具合（絶対値を大きくすると急なカーブ）
+    let a = -0.05; // 放物線の開き具合（絶対値を大きくすると急なカーブ）
     let width = 80; // コンソールの幅
     let height = 40; // コンソールの高さ（Y軸の最大値）
-    // width を usize から i32 に変換してから - を適用
-    let width_i32 = width as i32;
 
-    let mut grid = vec![vec![' '; width]; height];
-
-    for x in -width_i32 / 2..=width_i32 / 2 {
+    for x in -width / 2..=width / 2 {
         let xf = x as f64;
         let yf = a * xf * xf; // y座標の計算
-        let y = (height as i32 - 1 - yf.round() as i32).clamp(0, height as i32 - 1);
+        let y = height - 1 - (yf as i32); // 座標変換
 
-        let x_pos = (x + width_i32 / 2) as usize;
-        if x_pos < width {
-            grid[y as usize][x_pos] = '*';
-        }
-    }
-
-    for row in grid {
-        println!("{}", row.iter().collect::<String>());
+        // インデントを調整して * を表示
+        let spaces = " ".repeat(y as usize);
+        println!("{}*", spaces);
     }
 }
 
 // 課題7
 fn no7() {
-    let a = -0.2; // 放物線の開き具合（絶対値を大きくすると急なカーブ）
-    let width = 80; // コンソールの幅
-    let height = 40; // コンソールの高さ（Y軸の最大値）
-    // width を usize から i32 に変換してから - を適用
-    let width_i32 = width as i32;
+    let path_out: &str = "output.txt";
+    let mut new_output_file: File = File::create(path_out)
+        // エラー文
+        .expect("file not found.");
+    let a2 = -0.05; // 放物線の開き具合（絶対値を大きくすると急なカーブ）
+    let width_second = 80; // コンソールの幅
+    let height_second = 40; // コンソールの高さ（Y軸の最大値）
 
-    let mut grid = vec![vec![' '; width]; height];
-
-    for x in -width_i32 / 2..=width_i32 / 2 {
+    for x in -width_second / 2..=width_second / 2 {
         let xf = x as f64;
-        let yf = a * xf * xf; // y座標の計算
-        let y = (height as i32 - 1 - yf.round() as i32).clamp(0, height as i32 - 1);
+        let yf = a2 * xf * xf; // y座標の計算   
+        let y = height_second - 1 - (yf as i32); // 座標変換
+        // インデントを調整して * を表示
+        let input_spaces = " ".repeat(y as usize);
 
-        let x_pos = (x + width_i32 / 2) as usize;
-        if x_pos < width {
-            grid[y as usize][x_pos] = '*';
-        }
+        writeln!(new_output_file, "{}*", input_spaces).expect("cannot write.");
     }
-        let  path_out: &str = "output.txt";
 
-    for row in grid {
-
-        // file::createでファイル作成
-        let mut new_output_file: File = File::create(path_out)
-            // エラー文
-            .expect("file not found.");
-    
-        // witenlnで作成したファイルに書き込んでいる
-        writeln!(new_output_file, "{:?}",row.iter().collect::<String>()).expect("cannot write.");
-
-    }
-        println!("{:?}ファイルに放物線が記載されました", path_out);
-
-   
+    // witenlnで作成したファイルに書き込んでいる
+    println!("{:?}ファイルに放物線が記載されました", path_out);
 }
