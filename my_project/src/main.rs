@@ -1,10 +1,10 @@
 fn main() {
     println!("プログラミング課題");
-    // no1();
-    // no2();
-    // no3();
-    // no4();
-    // no5();
+    no1();
+    no2();
+    no3();
+    no4();
+    no5();
     no6();
     no7();
 }
@@ -190,17 +190,17 @@ fn no5() {
 
 use std::f64;
 fn no6() {
-    let a = -0.05; // 放物線の開き具合（絶対値を大きくすると急なカーブ）
-    let width = 80; // コンソールの幅
-    let height = 40; // コンソールの高さ（Y軸の最大値）
+    let a = 0.1; // 放物線の開き具合（絶対値を大きくすると急なカーブ）
+    let width = 80;
+    let height = 40;
 
-    for x in -width / 2..=width / 2 {
-        let xf = x as f64;
-        let yf = a * xf * xf; // y座標の計算
-        let y = height - 1 - (yf as i32); // 座標変換
+    for y in -height / 2..=height / 2 {
+        let yf = y as f64;
+        let xf = a * yf * yf; // y座標の計算
+        let x = width - 1 - (xf as i32); // 座標変換
 
         // インデントを調整して * を表示
-        let spaces = " ".repeat(y as usize);
+        let spaces = " ".repeat(x as usize);
         println!("{}*", spaces);
     }
 }
@@ -211,16 +211,16 @@ fn no7() {
     let mut new_output_file: File = File::create(path_out)
         // エラー文
         .expect("file not found.");
-    let a2 = -0.05; // 放物線の開き具合（絶対値を大きくすると急なカーブ）
-    let width_second = 80; // コンソールの幅
-    let height_second = 40; // コンソールの高さ（Y軸の最大値）
+    let a2 = 0.1; // 放物線の開き具合（絶対値を大きくすると急なカーブ）
+    let height_second = 40;
+    let width_second = 80; 
 
-    for x in -width_second / 2..=width_second / 2 {
-        let xf = x as f64;
-        let yf = a2 * xf * xf; // y座標の計算   
-        let y = height_second - 1 - (yf as i32); // 座標変換
+    for y in -height_second / 2..=height_second / 2 {
+        let yf = y as f64;
+        let xf = a2 * yf * yf; // y座標の計算
+        let x = width_second - 1 - (xf as i32); // 座標変換
         // インデントを調整して * を表示
-        let input_spaces = " ".repeat(y as usize);
+        let input_spaces = " ".repeat(x as usize);
 
         writeln!(new_output_file, "{}*", input_spaces).expect("cannot write.");
     }
