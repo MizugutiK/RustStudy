@@ -7,6 +7,7 @@ fn main() {
     no5();
     no6();
     no7();
+    no8();
 }
 
 // 課題１　重複しない乱数を生成
@@ -213,7 +214,7 @@ fn no7() {
         .expect("file not found.");
     let a2 = 0.1; // 放物線の開き具合（絶対値を大きくすると急なカーブ）
     let height_second = 40;
-    let width_second = 80; 
+    let width_second = 80;
 
     for y in -height_second / 2..=height_second / 2 {
         let yf = y as f64;
@@ -227,4 +228,53 @@ fn no7() {
 
     // witenlnで作成したファイルに書き込んでいる
     println!("{:?}ファイルに放物線が記載されました", path_out);
+}
+
+// 課題8
+fn no8() {
+    // どういった乱数を生成するか決定している(3種類くらいある中でどれを使うか)
+    let mut randm = rand::rng(); // 乱数生成器を作成
+
+    println!("数あてゲーム");
+    println!("1～100の数字を入れてください(-1で強制終了)");
+
+    // 数字を用意
+    let mut numbers: Vec<u32> = (1..=100).collect();
+
+    // 生成した数字を乱数生成器を用いてランダムに並べ替え
+    numbers.shuffle(&mut randm);
+
+    // 入力ループ
+    loop {
+        // 入力された数字の分、並べ替えた数字から取り出し
+        let selected_number = numbers[0];
+        let mut input: String = String::new(); //入力された数字保持
+
+        std::io::stdin().read_line(&mut input).expect("入力エラー");
+
+        if input.trim() == "-1" {
+            println!("ゲームを終了します。正解の数字: {}", selected_number);
+            break;
+        }
+
+        // 数字のチェック
+        let guess: u32 = match input.trim().parse() {
+            Ok(num) if (1..=100).contains(&num) => num,
+            _ => {
+                println!("無効な入力です。1～100の範囲で入力してください。");
+                continue;
+            }
+   
+        };
+
+        // 数字判定部分
+        if selected_number > guess {
+            println!("数字が小さいです")
+        } else if guess > selected_number {
+            println!("数字が大きいです")
+        } else {
+            println!("当たりました！ 🎉 正解の数字: {}", selected_number);
+            break ;
+        }
+    }
 }
