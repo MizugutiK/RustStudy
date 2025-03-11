@@ -1,13 +1,14 @@
 fn main() {
     println!("プログラミング課題");
-    no1();
-    no2();
-    no3();
-    no4();
-    no5();
-    no6();
-    no7();
-    no8();
+    // no1();
+    // no2();
+    // no3();
+    // no4();
+    // no5();
+    // no6();
+    // no7();
+    // no8();
+    no9();
 }
 
 // 課題１　重複しない乱数を生成
@@ -264,7 +265,6 @@ fn no8() {
                 println!("無効な入力です。1～100の範囲で入力してください。");
                 continue;
             }
-   
         };
 
         // 数字判定部分
@@ -274,7 +274,71 @@ fn no8() {
             println!("数字が大きいです")
         } else {
             println!("当たりました！ 🎉 正解の数字: {}", selected_number);
-            break ;
+            break;
+        }
+    }
+}
+
+// 課題9
+// my_projectは現在のディレクトリ(my_project)の中にmy_projectフォルダがあるか探すため出てこない
+// "."を入れれば全部出てくる
+use std::fs;
+use std::path::{Path, PathBuf};
+fn no9() {
+    println!("フォルダ名を入力してください:");
+    let mut input = String::new();
+    std::io::stdin()
+        .read_line(&mut input)
+        .expect("読み取りに失敗しました");
+
+    // 改行文字を取り除いて PathBuf に変換
+    let folder_path = PathBuf::from(input.trim());
+
+    // フォルダが存在し、ディレクトリかチェック
+    if folder_path.is_dir() {
+        println!("{}", folder_path.display());
+        print_tree(&folder_path, "".to_string());
+    } else {
+        eprintln!("指定されたパスはディレクトリではありません。");
+    }
+
+    // 再帰的にフォルダの中身をツリー表示
+    fn print_tree(dir: &Path, prefix: String) {
+        // ディレクトリの中身を読み取る
+        if let Ok(entries) = fs::read_dir(dir) {
+            let mut entries: Vec<_> = entries.filter_map(|e| e.ok()).collect();
+            // エントリをパスのアルファベット順でソート
+            entries.sort_by_key(|e| e.path());
+
+            // エントリ数を取得
+            let count = entries.len();
+
+            // すべてのエントリをループ処理
+            for (i, entry) in entries.into_iter().enumerate() {
+                let get_path = entry.path();
+                
+                // エントリ数が最後か判定する
+                let is_last = i == count - 1;
+
+                // ツリー接続文字
+                let connector = if is_last { "└── " } else { "├── " };
+
+                // ツリー構造を表示
+                println!(
+                    // プレフィックス + ツリー接続文字 + ファイル名
+                    "{}{}{}",
+                    prefix,//prefixはツリー構造を表示するために階層ごとに接続記号やインデントを付けるために使われる
+                    connector,
+                    get_path.file_name().unwrap().to_string_lossy()
+                );
+
+                // もしエントリがディレクトリなら、再帰的にそのディレクトリの中身を表示
+                if get_path.is_dir() {
+                    // エントリ数が最後か判定する
+                    let new_prefix = format!("{}{}", prefix, if is_last { "    " } else { "│   " });
+                    print_tree(&get_path, new_prefix);
+                }
+            }
         }
     }
 }
