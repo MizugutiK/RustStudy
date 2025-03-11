@@ -1,14 +1,15 @@
 fn main() {
     println!("プログラミング課題");
-    // no1();
-    // no2();
-    // no3();
-    // no4();
-    // no5();
-    // no6();
-    // no7();
-    // no8();
+    no1();
+    no2();
+    no3();
+    no4();
+    no5();
+    no6();
+    no7();
+    no8();
     no9();
+    no10();
 }
 
 // 課題１　重複しない乱数を生成
@@ -21,7 +22,7 @@ fn no1() {
 
     // 入力ループ
     let num_count: usize = loop {
-        println!("1～1,000,000以内の正の整数を入力してください。（終了する場合はCtrl+C）:");
+        println!("1～1,000,000以内の正の整数を入力してください。（終了する場合は-1）:");
 
         // 入力を受け取る
         if std::io::stdin().read_line(&mut input).is_err() {
@@ -32,6 +33,11 @@ fn no1() {
         match input.trim().parse::<usize>() {
             Ok(n) if (1..=1_000_000).contains(&n) => break n,
             _ => println!("無効な入力です。1～1,000,000の範囲の正の整数を入力してください。"),
+        }
+        
+        if input.trim() == "-1" {
+            println!("ゲームを終了します。正解の数字: {}", input);
+            break 42 
         }
     };
     // 数字を用意
@@ -316,7 +322,7 @@ fn no9() {
             // すべてのエントリをループ処理
             for (i, entry) in entries.into_iter().enumerate() {
                 let get_path = entry.path();
-                
+
                 // エントリ数が最後か判定する
                 let is_last = i == count - 1;
 
@@ -327,7 +333,7 @@ fn no9() {
                 println!(
                     // プレフィックス + ツリー接続文字 + ファイル名
                     "{}{}{}",
-                    prefix,//prefixはツリー構造を表示するために階層ごとに接続記号やインデントを付けるために使われる
+                    prefix, //prefixはツリー構造を表示するために階層ごとに接続記号やインデントを付けるために使われる
                     connector,
                     get_path.file_name().unwrap().to_string_lossy()
                 );
@@ -340,5 +346,31 @@ fn no9() {
                 }
             }
         }
+    }
+}
+
+// 課題10
+use std::fs::{Metadata, metadata};
+fn no10() {
+    println!("ファイル日付を変更するファイル名を入れてください:");
+    let mut date_searc_filename = String::new();
+
+    std::io::stdin()
+        .read_line(&mut date_searc_filename)
+        .expect("読み取りに失敗しました");
+
+    let re_date_searc_filename = date_searc_filename.trim();
+
+    // 指定したファイル名のファイルを開く
+    match get_meta_data(re_date_searc_filename) {
+        Ok(meta) => {
+            println!("ファイルのメタデータ取得成功:");
+            println!("最終更新日時: {:?}", meta.modified().ok());
+        }
+        Err(e) => println!("メタデータの取得に失敗しました: {}", e),
+    }
+    fn get_meta_data<P: AsRef<Path>>(file_path: P) -> Result<Metadata, Box<dyn std::error::Error>> {
+        let meta = metadata(file_path)?;
+        Ok(meta)
     }
 }
