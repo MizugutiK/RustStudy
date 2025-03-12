@@ -34,10 +34,10 @@ fn no1() {
             Ok(n) if (1..=1_000_000).contains(&n) => break n,
             _ => println!("無効な入力です。1～1,000,000の範囲の正の整数を入力してください。"),
         }
-        
+
         if input.trim() == "-1" {
-            println!("ゲームを終了します。正解の数字: {}", input);
-            break 42 
+            println!("No1を終了しました。No2に移行します");
+            break 42;
         }
     };
     // 数字を用意
@@ -68,51 +68,46 @@ fn no2() {
     // witenlnで作成したファイルに書き込んでいる
     writeln!(newfile, "hello world.").expect("cannot write.");
 
-    println!("{:?}に書き込まれました", path)
+    println!("{:?}に書き込まれました。No3に移行します", path)
 }
 
 // 課題3　ファイル入力
 fn no3() {
-    println!("読み込むファイル名を入れてください:");
-
     let mut filename = String::new();
-    std::io::stdin()
-        .read_line(&mut filename)
-        .expect("読み取りに失敗しました");
 
-    // 改行文字を取り除く
-    // stdin から読み取った入力には末尾に改行が含まれるらしい
-    let refilename = filename.trim();
+    // 入力ループ
+    loop {
+        println!("読み込むファイル名を入れてください:");
+        filename.clear(); // 毎回クリアしないと前回の入力が残る
+        // 入力を受け取る
+        if std::io::stdin().read_line(&mut filename).is_err() {
+            println!("読み取りに失敗しました。もう一度入力してください。");
+            continue;
+        }
+        // 改行文字を取り除く
+        // stdin から読み取った入力には末尾に改行が含まれるらしい
+        let refilename = filename.trim();
 
-    // ファイルを開く
-    let open_file: File = File::open(refilename).expect(&format!(
-        "ファイル '{}' を開くことに失敗しました",
-        refilename
-    ));
+        if filename.trim() == "-1" {
+            println!("No3を終了しました。No4に移行します");
+            break;
+        }
+        match File::open(refilename) {
+            Ok(file) => {
+                let open_buffered = BufReader::new(file);
 
-    // println!("ファイル内に記載するテキストを入力してください:");
-
-    // let mut newtext = String::new();
-    // std::io::stdin()
-    //     .read_line(&mut newtext)
-    //     .expect("テキストの入力に失敗しました");
-
-    // // newtext.trim()で入力した文字の末尾の改行を防ぐ
-    // writeln!(createfile, "{}", newtext.trim()).expect("ファイルへの書き込みに失敗しました");
-
-    // let mut content_open = String::new();
-
-    // open_file
-    //     .read_to_string(&mut content_open)
-    //     .expect("ファイルの読み込みに失敗しました");
-
-    let opem_buffered = BufReader::new(open_file);
-
-    //表示用
-    for line in opem_buffered.lines() {
-        match line {
-            Ok(content) => println!("{}", content), // そのまま表示
-            Err(e) => eprintln!("ファイルの読み込み中にエラーが発生しました: {}", e),
+                // ファイルの内容を1行ずつ表示
+                for line in open_buffered.lines() {
+                    match line {
+                        Ok(content) => println!("{}", content),
+                        Err(e) => eprintln!("ファイルの読み込み中にエラーが発生しました: {}", e),
+                    }
+                }
+                break; // 正常にファイルを読み込んだらループ終了
+            }
+            Err(e) => {
+                println!("ファイル '{}' を開くことに失敗しました: {}", refilename, e);
+            }
         }
     }
 }
@@ -123,29 +118,47 @@ use std::io::{BufRead, BufReader}; // ファイルを読むために必要なト
 
 fn no4() {
     println!("ソートするファイル名を入れてください:");
-
     let mut searchfilename = String::new();
-    std::io::stdin()
-        .read_line(&mut searchfilename)
-        .expect("読み取りに失敗しました");
-    let researchfilename = searchfilename.trim();
 
-    // 指定したファイル名のファイルを開く
-    // my_project内似なければいけない
-    let openfile = File::open(researchfilename).expect("ファイルを開くことができませんでした");
+    loop {
+        // 毎回クリアしないと前回の入力が残る
+        searchfilename.clear();
+        if std::io::stdin().read_line(&mut searchfilename).is_err() {
+            println!("読み取りに失敗しました。もう一度入力してください。");
+            continue;
+        }
+        let researchfilename = searchfilename.trim();
 
-    // 1行ずつ読み取るために必要
-    let buffered = BufReader::new(openfile);
+        // `-1` なら終了
+        if searchfilename.trim() == "-1" {
+            println!("No4を終了しました。No5に移行します");
+            break;
+        }
 
-    // 読み取ったテキストをベクター型に格納
-    let mut contents: Vec<String> = buffered
-        .lines() // `lines()` は `Result<String>` を返す
-        .filter_map(|line| line.ok()) // エラーを無視し、`Ok(String)` のみ取得
-        .collect();
+        // 指定したファイル名のファイルを開く
+        // my_project内似なければいけない
+        match File::open(researchfilename) {
+            Ok(file) => {
+                // 1行ずつ読み取るために必要
+                let serch_buffered = BufReader::new(file);
+                // 読み取ったテキストをベクター型に格納
+                let mut contents: Vec<String> = serch_buffered
+                    .lines() // `lines()` は `Result<String>` を返す
+                    .filter_map(|line| line.ok()) // エラーを無視し、`Ok(String)` のみ取得
+                    .collect();
 
-    contents.sort();
-
-    println!("ソート結果{:?}", contents);
+                contents.sort();
+                println!("ソート結果{:?}", contents);
+                break; // 正常にファイルを読み込んだらループ終了
+            }
+            Err(e) => {
+                println!(
+                    "ファイル '{}' を開くことに失敗しました: {}",
+                    searchfilename, e
+                );
+            }
+        }
+    }
 }
 
 // 課題5
